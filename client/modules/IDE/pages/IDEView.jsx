@@ -252,7 +252,7 @@ class IDEView extends React.Component {
   render() {
     return (
       <RootPage>
-        <Helmet>
+        {/* <Helmet>
           <title>{getTitle(this.props)}</title>
         </Helmet>
         {this.props.toast.isVisible && <Toast />}
@@ -293,7 +293,7 @@ class IDEView extends React.Component {
               setAutocloseBracketsQuotes={this.props.setAutocloseBracketsQuotes}
             />
           </Overlay>
-        )}
+        )} */}
         <main className="editor-preview-container">
           <SplitPane
             split="vertical"
@@ -303,7 +303,7 @@ class IDEView extends React.Component {
             allowResize={this.props.ide.sidebarIsExpanded}
             minSize={125}
           >
-            <Sidebar
+            {/* <Sidebar
               files={this.props.files}
               setSelectedFile={this.props.setSelectedFile}
               newFile={this.props.newFile}
@@ -318,7 +318,7 @@ class IDEView extends React.Component {
               owner={this.props.project.owner}
               openUploadFileModal={this.props.openUploadFileModal}
               closeUploadFileModal={this.props.closeUploadFileModal}
-            />
+            /> */}
             <SplitPane
               split="vertical"
               defaultSize="50%"
@@ -335,24 +335,6 @@ class IDEView extends React.Component {
                 margin: '0px 0px'
               }}
             >
-              <SplitPane
-                split="horizontal"
-                primary="second"
-                size={
-                  this.props.ide.consoleIsExpanded ? this.state.consoleSize : 29
-                }
-                minSize={29}
-                onChange={(size) => this.setState({ consoleSize: size })}
-                allowResize={this.props.ide.consoleIsExpanded}
-                className="editor-preview-subpanel"
-              >
-                <Editor
-                  provideController={(ctl) => {
-                    this.cmController = ctl;
-                  }}
-                />
-                <Console />
-              </SplitPane>
               <section className="preview-frame-holder">
                 <header className="preview-frame__header">
                   <h2 className="preview-frame__title">
@@ -375,10 +357,28 @@ class IDEView extends React.Component {
                   <PreviewFrame cmController={this.cmController} />
                 </div>
               </section>
+              <SplitPane
+                split="horizontal"
+                primary="second"
+                size={
+                  this.props.ide.consoleIsExpanded ? this.state.consoleSize : 29
+                }
+                minSize={229}
+                onChange={(size) => this.setState({ consoleSize: size })}
+                allowResize={this.props.ide.consoleIsExpanded}
+                className="editor-preview-subpanel"
+              >
+                <Editor
+                  provideController={(ctl) => {
+                    this.cmController = ctl;
+                  }}
+                />
+                <Console />
+              </SplitPane>
             </SplitPane>
           </SplitPane>
         </main>
-        {this.props.ide.modalIsVisible && <NewFileModal />}
+        {/* {this.props.ide.modalIsVisible && <NewFileModal />}
         {this.props.ide.newFolderModalVisible && (
           <NewFolderModal closeModal={this.props.closeNewFolderModal} />
         )}
@@ -451,7 +451,7 @@ class IDEView extends React.Component {
               closeModal={this.props.hideErrorModal}
             />
           </Overlay>
-        )}
+        )} */}
       </RootPage>
     );
   }
@@ -517,50 +517,50 @@ IDEView.propTypes = {
     language: PropTypes.string.isRequired,
     autocloseBracketsQuotes: PropTypes.bool.isRequired
   }).isRequired,
-  closePreferences: PropTypes.func.isRequired,
-  setAutocloseBracketsQuotes: PropTypes.func.isRequired,
-  setFontSize: PropTypes.func.isRequired,
-  setAutosave: PropTypes.func.isRequired,
-  setLineNumbers: PropTypes.func.isRequired,
-  setLinewrap: PropTypes.func.isRequired,
-  setLintWarning: PropTypes.func.isRequired,
-  setTextOutput: PropTypes.func.isRequired,
-  setGridOutput: PropTypes.func.isRequired,
+  // closePreferences: PropTypes.func.isRequired,
+  // setAutocloseBracketsQuotes: PropTypes.func.isRequired,
+  // setFontSize: PropTypes.func.isRequired,
+  // setAutosave: PropTypes.func.isRequired,
+  // setLineNumbers: PropTypes.func.isRequired,
+  // setLinewrap: PropTypes.func.isRequired,
+  // setLintWarning: PropTypes.func.isRequired,
+  // setTextOutput: PropTypes.func.isRequired,
+  // setGridOutput: PropTypes.func.isRequired,
   setAllAccessibleOutput: PropTypes.func.isRequired,
-  files: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired
-    })
-  ).isRequired,
+  // files: PropTypes.arrayOf(
+  //   PropTypes.shape({
+  //     id: PropTypes.string.isRequired,
+  //     name: PropTypes.string.isRequired,
+  //     content: PropTypes.string.isRequired
+  //   })
+  // ).isRequired,
   selectedFile: PropTypes.shape({
     id: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  setSelectedFile: PropTypes.func.isRequired,
+  // setSelectedFile: PropTypes.func.isRequired,
   htmlFile: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired
   }).isRequired,
-  newFile: PropTypes.func.isRequired,
+  // newFile: PropTypes.func.isRequired,
   expandSidebar: PropTypes.func.isRequired,
   collapseSidebar: PropTypes.func.isRequired,
   cloneProject: PropTypes.func.isRequired,
   expandConsole: PropTypes.func.isRequired,
   collapseConsole: PropTypes.func.isRequired,
-  deleteFile: PropTypes.func.isRequired,
-  updateFileName: PropTypes.func.isRequired,
+  // deleteFile: PropTypes.func.isRequired,
+  // updateFileName: PropTypes.func.isRequired,
   updateFileContent: PropTypes.func.isRequired,
-  openProjectOptions: PropTypes.func.isRequired,
-  closeProjectOptions: PropTypes.func.isRequired,
-  newFolder: PropTypes.func.isRequired,
+  // openProjectOptions: PropTypes.func.isRequired,
+  // closeProjectOptions: PropTypes.func.isRequired,
+  // newFolder: PropTypes.func.isRequired,
   closeNewFolderModal: PropTypes.func.isRequired,
   closeNewFileModal: PropTypes.func.isRequired,
-  closeShareModal: PropTypes.func.isRequired,
-  closeKeyboardShortcutModal: PropTypes.func.isRequired,
+  // closeShareModal: PropTypes.func.isRequired,
+  // closeKeyboardShortcutModal: PropTypes.func.isRequired,
   toast: PropTypes.shape({
     isVisible: PropTypes.bool.isRequired
   }).isRequired,
@@ -569,13 +569,13 @@ IDEView.propTypes = {
     setRouteLeaveHook: PropTypes.func
   }).isRequired,
   route: PropTypes.oneOfType([PropTypes.object, PropTypes.element]).isRequired,
-  setTheme: PropTypes.func.isRequired,
+  // setTheme: PropTypes.func.isRequired,
   setPreviousPath: PropTypes.func.isRequired,
   showErrorModal: PropTypes.func.isRequired,
-  hideErrorModal: PropTypes.func.isRequired,
+  // hideErrorModal: PropTypes.func.isRequired,
   clearPersistedState: PropTypes.func.isRequired,
   startSketch: PropTypes.func.isRequired,
-  openUploadFileModal: PropTypes.func.isRequired,
+  // openUploadFileModal: PropTypes.func.isRequired,
   closeUploadFileModal: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   isUserOwner: PropTypes.bool.isRequired
