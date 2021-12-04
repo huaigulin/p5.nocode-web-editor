@@ -96,6 +96,17 @@ class IDEView extends React.Component {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
     this.autosaveInterval = null;
+    const file = this.cmController.getContent();
+    this.props.updateFileContent(
+      file.id,
+      `function setup() {
+      createCanvas(800, 800);
+    }
+    
+    function draw() {
+      background(220);
+    }`
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -247,6 +258,20 @@ class IDEView extends React.Component {
   syncFileContent = () => {
     const file = this.cmController.getContent();
     this.props.updateFileContent(file.id, file.content);
+  };
+
+  updateSketch = () => {
+    const file = this.cmController.getContent();
+    this.props.updateFileContent(
+      file.id,
+      `function setup() {
+      createCanvas(400, 400);
+    }
+    
+    function draw() {
+      background(220);
+    }`
+    );
   };
 
   render() {
