@@ -16,14 +16,14 @@ module.exports = {
       'core-js/modules/es6.array.iterator',
       'webpack-hot-middleware/client',
       'react-hot-loader/patch',
-      './client/index.jsx',
+      './client/index.jsx'
     ],
-    'previewApp': [
+    previewApp: [
       'core-js/modules/es6.promise',
       'core-js/modules/es6.array.iterator',
       'webpack-hot-middleware/client',
       'react-hot-loader/patch',
-      './client/modules/Preview/previewIndex.jsx',
+      './client/modules/Preview/previewIndex.jsx'
     ],
     previewScripts: [
       '@babel/polyfill',
@@ -37,10 +37,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: [
-      'client',
-      'node_modules'
-    ]
+    modules: ['client', 'node_modules']
   },
   plugins: [
     new ESLintPlugin({
@@ -54,23 +51,27 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: path.resolve(__dirname, '../translations/locales'), to: path.resolve(__dirname, 'locales') }
+        {
+          from: path.resolve(__dirname, '../translations/locales'),
+          to: path.resolve(__dirname, 'locales')
+        }
       ]
-    }
-    )
+    })
   ],
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: [/node_modules/, /.+\.config.js/],
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-            plugins: ['react-hot-loader/babel'],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              plugins: ['react-hot-loader/babel']
+            }
           }
-        }]
+        ]
       },
       {
         test: /main\.scss$/,
@@ -124,10 +125,12 @@ module.exports = {
         use: {
           loader: 'sass-extract-loader',
           options: {
-            plugins: [{ plugin: 'sass-extract-js', options: { camelCase: false } }]
+            plugins: [
+              { plugin: 'sass-extract-js', options: { camelCase: false } }
+            ]
           }
         }
       }
-    ],
-  },
+    ]
+  }
 };
