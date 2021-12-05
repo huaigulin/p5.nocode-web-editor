@@ -48,6 +48,8 @@ class IDEView extends React.Component {
     this.handleGlobalKeydown = this.handleGlobalKeydown.bind(this);
 
     this.state = {
+      windowWidth: 0,
+      windowHeight: 0
       // consoleSize: props.ide.consoleIsExpanded ? 150 : 29
       // sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
     };
@@ -78,28 +80,9 @@ class IDEView extends React.Component {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
     this.autosaveInterval = null;
-    const sketchFile = this.props.files.find(
-      (file) => file.name === 'sketch.js'
-    );
-    // try with typing code to draw
-    setTimeout(() => {
-      console.log('++++++');
-      console.log(this.props);
-      console.log(sketchFile);
-      console.log(this.canvas.offsetWidth);
-      this.props.updateFileContent(
-        sketchFile.id,
-        `function setup() {
-        createCanvas(${this.canvas.offsetWidth}, ${this.canvas.offsetHeight});
-      }
-      
-      function draw() {
-        background(220);
-        circle(20, 20, 20);
-      }`
-      );
-      this.props.startSketch();
-    }, 1000);
+
+    // listen for window resize
+    window.addEventListener('resize', this.updateWindowSize);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -121,7 +104,36 @@ class IDEView extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    // redraw when window width and height updates
+    if (
+      prevState.windowWidth !== this.state.windowWidth ||
+      prevState.windowHeight !== this.state.windowHeight
+    ) {
+      const sketchFile = this.props.files.find(
+        (file) => file.name === 'sketch.js'
+      );
+      // try with typing code to draw
+      setTimeout(() => {
+        console.log('++++++');
+        console.log(this.props);
+        console.log(sketchFile);
+        console.log(this.canvas.offsetWidth);
+        this.props.updateFileContent(
+          sketchFile.id,
+          `function setup() {
+          createCanvas(${this.state.windowWidth}, ${this.state.windowHeight});
+        }
+        
+        function draw() {
+          background(220);
+          circle(20, 20, 20);
+        }`
+        );
+        this.props.startSketch();
+      }, 1000);
+    }
+
     if (this.props.isUserOwner && this.props.project.id) {
       if (
         this.props.preferences.autosave &&
@@ -152,11 +164,23 @@ class IDEView extends React.Component {
       );
     }
   }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleGlobalKeydown, false);
     clearTimeout(this.autosaveInterval);
     this.autosaveInterval = null;
+
+    // remove window resize event listener
+    window.removeEventListener('resize', this.updateWindowSize);
   }
+
+  updateWindowSize = () => {
+    this.setState({
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
+    });
+  };
+
   handleGlobalKeydown(e) {
     // 83 === s
     if (
@@ -257,41 +281,31 @@ class IDEView extends React.Component {
     return (
       <RootPage>
         <main className="editor-preview-container">
-          <Grid container>
-            <Grid
-              item
-              style={{ flexGrow: 1 }}
-              ref={(canvas) => {
-                this.canvas = canvas;
-              }}
-            >
-              <section className="preview-frame-holder">
-                {/* <header className="preview-frame__header">
-                  <h2 className="preview-frame__title">
-                    {this.props.t('Toolbar.Preview')}
-                  </h2>
-                </header> */}
-                <div className="preview-frame__content">
-                  <div
-                    className="preview-frame-overlay"
-                    ref={(element) => {
-                      this.overlay = element;
-                    }}
-                  />
-                  <div>
-                    {((this.props.preferences.textOutput ||
-                      this.props.preferences.gridOutput) &&
-                      this.props.ide.isPlaying) ||
-                      this.props.ide.isAccessibleOutputPlaying}
-                  </div>
-                  <PreviewFrame cmController={this.cmController} />
+          <Grid
+            container
+            ref={(canvas) => {
+              this.canvas = canvas;
+            }}
+          >
+            <section className="preview-frame-holder" style={{ width: '100%' }}>
+              <div className="preview-frame__content">
+                <div
+                  className="preview-frame-overlay"
+                  ref={(element) => {
+                    this.overlay = element;
+                  }}
+                />
+                <div>
+                  {((this.props.preferences.textOutput ||
+                    this.props.preferences.gridOutput) &&
+                    this.props.ide.isPlaying) ||
+                    this.props.ide.isAccessibleOutputPlaying}
                 </div>
-              </section>
-            </Grid>
-            <Grid item style={{ width: 72 }}>
-              <Dock />
-            </Grid>
+                <PreviewFrame cmController={this.cmController} />
+              </div>
+            </section>
           </Grid>
+          <Dock />
         </main>
       </RootPage>
     );

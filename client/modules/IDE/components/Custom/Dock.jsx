@@ -14,17 +14,17 @@ import CropSquareIcon from '@mui/icons-material/CropSquare';
 
 export default function Dock() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="sticky" color="transparent">
-        <Toolbar>
+    <Box sx={{ borderRadius: 4, position: 'absolute', right: 0 }}>
+      <AppBar position="sticky" color="transparent" sx={{ borderRadius: 4 }}>
+        <Toolbar style={{ padding: 16 }}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
-              <IconButton size="large" edge="start" color="secondary">
+              <IconButton size="large">
                 <BrushIcon fontSize="large" />
               </IconButton>
             </Grid>
             <Grid item>
-              <IconButton size="large" edge="start">
+              <IconButton size="large">
                 <CropSquareIcon fontSize="large" />
               </IconButton>
             </Grid>
