@@ -16,7 +16,7 @@ import * as PreferencesActions from '../actions/preferences';
 import * as EditorAccessibilityActions from '../actions/editorAccessibility';
 
 // Local Imports
-import Editor from '../components/Editor';
+// import Editor from '../components/Editor';
 
 import {
   PlayIcon,
@@ -35,7 +35,7 @@ import Screen from '../../../components/mobile/MobileScreen';
 import Footer from '../../../components/mobile/Footer';
 import IDEWrapper from '../../../components/mobile/IDEWrapper';
 import MobileExplorer from '../../../components/mobile/Explorer';
-import Console from '../components/Console';
+// import Console from '../components/Console';
 import { remSize } from '../../../theme';
 
 import ActionStrip from '../../../components/mobile/ActionStrip';
@@ -386,15 +386,11 @@ const MobileIDEView = (props) => {
       {toast.isVisible && <Toast />}
 
       <IDEWrapper>
-        <Editor provideController={setCmController} />
+        {/* <Editor provideController={setCmController} /> */}
       </IDEWrapper>
 
       <Footer>
-        {consoleIsExpanded && (
-          <Expander expanded>
-            <Console />
-          </Expander>
-        )}
+        {consoleIsExpanded && <Expander expanded>{/* <Console /> */}</Expander>}
         <ActionStrip actions={projectActions} />
       </Footer>
     </Screen>

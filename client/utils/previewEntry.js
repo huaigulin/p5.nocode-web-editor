@@ -1,6 +1,6 @@
 import loopProtect from 'loop-protect';
-import { Hook, Decode, Encode } from 'console-feed';
-import StackTrace from 'stacktrace-js';
+// import { Hook, Decode, Encode } from 'console-feed';
+// import StackTrace from 'stacktrace-js';
 import evaluateExpression from './evaluateExpression';
 
 // should postMessage user the dispatcher? does the parent window need to
@@ -19,11 +19,11 @@ window.loopProtect = loopProtect;
 
 const consoleBuffer = [];
 const LOGWAIT = 500;
-Hook(window.console, (log) => {
-  consoleBuffer.push({
-    log
-  });
-});
+// Hook(window.console, (log) => {
+//   consoleBuffer.push({
+//     log
+//   });
+// });
 setInterval(() => {
   if (consoleBuffer.length > 0) {
     const message = {
@@ -40,23 +40,23 @@ function handleMessageEvent(e) {
   if (window.origin !== e.origin) return;
   const { data } = e;
   const { source, messages } = data;
-  if (source === 'console' && Array.isArray(messages)) {
-    const decodedMessages = messages.map((message) => Decode(message.log));
-    decodedMessages.forEach((message) => {
-      const { data: args } = message;
-      const { result, error } = evaluateExpression(args);
-      const resultMessages = [
-        { log: Encode({ method: error ? 'error' : 'result', data: [result] }) }
-      ];
-      editor.postMessage(
-        {
-          messages: resultMessages,
-          source: 'sketch'
-        },
-        editorOrigin
-      );
-    });
-  }
+  // if (source === 'console' && Array.isArray(messages)) {
+  //   const decodedMessages = messages.map((message) => Decode(message.log));
+  //   decodedMessages.forEach((message) => {
+  //     const { data: args } = message;
+  //     const { result, error } = evaluateExpression(args);
+  //     const resultMessages = [
+  //       { log: Encode({ method: error ? 'error' : 'result', data: [result] }) }
+  //     ];
+  //     editor.postMessage(
+  //       {
+  //         messages: resultMessages,
+  //         source: 'sketch'
+  //       },
+  //       editorOrigin
+  //     );
+  //   });
+  // }
 }
 
 window.addEventListener('message', handleMessageEvent);
@@ -107,9 +107,9 @@ window.onerror = async function onError(
 window.onunhandledrejection = async function onUnhandledRejection(event) {
   if (event.reason && event.reason.message) {
     let stackLines = [];
-    if (event.reason.stack) {
-      stackLines = await StackTrace.fromError(event.reason);
-    }
+    // if (event.reason.stack) {
+    //   stackLines = await StackTrace.fromError(event.reason);
+    // }
     let data = `${event.reason.name}: ${event.reason.message}`;
     stackLines.forEach((stackLine) => {
       const { fileName, functionName, lineNumber, columnNumber } = stackLine;

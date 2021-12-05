@@ -5,7 +5,7 @@ import Header from '../../components/mobile/Header';
 import IconButton from '../../components/mobile/IconButton';
 import PreviewFrame from '../IDE/components/PreviewFrame';
 import Screen from '../../components/mobile/MobileScreen';
-import Console from '../IDE/components/Console';
+// import Console from '../IDE/components/Console';
 import * as ProjectActions from '../IDE/actions/project';
 import * as IDEActions from '../IDE/actions/ide';
 import * as PreferencesActions from '../IDE/actions/preferences';
@@ -86,9 +86,7 @@ const MobileSketchView = () => {
           clearConsole={clearConsole}
         />
       </Content>
-      <Footer>
-        <Console />
-      </Footer>
+      <Footer>{/* <Console /> */}</Footer>
     </Screen>
   );
 };

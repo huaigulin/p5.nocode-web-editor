@@ -19,5 +19,13 @@ services:
       - '8002:8002'
     depends_on:
       - mongo
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 16000M
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 volumes:
   dbdata:

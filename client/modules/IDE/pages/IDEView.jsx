@@ -4,24 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { withTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet';
-import SplitPane from 'react-split-pane';
-import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
-import Editor from '../components/Editor';
-import Sidebar from '../components/Sidebar';
 import PreviewFrame from '../components/PreviewFrame';
-import Toolbar from '../components/Toolbar';
-import Preferences from '../components/Preferences/index';
-import NewFileModal from '../components/NewFileModal';
-import NewFolderModal from '../components/NewFolderModal';
-import UploadFileModal from '../components/UploadFileModal';
-import ShareModal from '../components/ShareModal';
-import KeyboardShortcutModal from '../components/KeyboardShortcutModal';
-import ErrorModal from '../components/ErrorModal';
-import Nav from '../../../components/Nav';
-import Console from '../components/Console';
-import Toast from '../components/Toast';
 import * as FileActions from '../actions/files';
 import * as IDEActions from '../actions/ide';
 import * as ProjectActions from '../actions/project';
@@ -31,14 +15,9 @@ import * as UserActions from '../../User/actions';
 import * as ToastActions from '../actions/toast';
 import * as ConsoleActions from '../actions/console';
 import { getHTMLFile } from '../reducers/files';
-import Overlay from '../../App/components/Overlay';
-import About from '../components/About';
-import AddToCollectionList from '../components/AddToCollectionList';
-import Feedback from '../components/Feedback';
-import { CollectionSearchbar } from '../components/Searchbar';
 import { getIsUserOwner } from '../selectors/users';
 import RootPage from '../../../components/RootPage';
-import { startSketch } from '../actions/ide';
+// import Dock from '../components/Custom/Dock';
 
 function getTitle(props) {
   const { id } = props.project;
@@ -69,7 +48,7 @@ class IDEView extends React.Component {
     this.handleGlobalKeydown = this.handleGlobalKeydown.bind(this);
 
     this.state = {
-      consoleSize: props.ide.consoleIsExpanded ? 150 : 29
+      // consoleSize: props.ide.consoleIsExpanded ? 150 : 29
       // sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
     };
   }
@@ -99,11 +78,16 @@ class IDEView extends React.Component {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
     this.autosaveInterval = null;
-    const file = this.cmController.getContent();
+    const sketchFile = this.props.files.find(
+      (file) => file.name === 'sketch.js'
+    );
     // try with typing code to draw
     setTimeout(() => {
+      console.log('++++++');
+      console.log(this.props);
+      console.log(sketchFile);
       this.props.updateFileContent(
-        file.id,
+        sketchFile.id,
         `function setup() {
         createCanvas(800, 800);
       }
@@ -273,7 +257,7 @@ class IDEView extends React.Component {
       <RootPage>
         <main className="editor-preview-container">
           <Grid container>
-            <Grid item xs={12}>
+            <Grid item xs={10}>
               <section className="preview-frame-holder">
                 <header className="preview-frame__header">
                   <h2 className="preview-frame__title">
@@ -297,27 +281,8 @@ class IDEView extends React.Component {
                 </div>
               </section>
             </Grid>
-            {/* Hide the code editor and console */}
-            <Grid item xs={0}>
-              <SplitPane
-                split="horizontal"
-                primary="second"
-                size={
-                  this.props.ide.consoleIsExpanded ? this.state.consoleSize : 29
-                }
-                minSize={0}
-                onChange={(size) => this.setState({ consoleSize: size })}
-                allowResize={this.props.ide.consoleIsExpanded}
-                className="editor-preview-subpanel"
-                maxSize={0}
-              >
-                <Editor
-                  provideController={(ctl) => {
-                    this.cmController = ctl;
-                  }}
-                />
-                <Console />
-              </SplitPane>
+            <Grid item xs={2}>
+              {/* <Dock /> */}
             </Grid>
           </Grid>
         </main>
@@ -327,6 +292,7 @@ class IDEView extends React.Component {
 }
 
 IDEView.propTypes = {
+  files: PropTypes.arrayOf.isRequired,
   params: PropTypes.shape({
     project_id: PropTypes.string,
     username: PropTypes.string,
