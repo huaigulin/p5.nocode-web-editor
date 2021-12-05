@@ -17,7 +17,7 @@ import * as ConsoleActions from '../actions/console';
 import { getHTMLFile } from '../reducers/files';
 import { getIsUserOwner } from '../selectors/users';
 import RootPage from '../../../components/RootPage';
-// import Dock from '../components/Custom/Dock';
+import Dock from '../components/Custom/Dock';
 
 function getTitle(props) {
   const { id } = props.project;
@@ -86,10 +86,11 @@ class IDEView extends React.Component {
       console.log('++++++');
       console.log(this.props);
       console.log(sketchFile);
+      console.log(this.canvas.offsetWidth);
       this.props.updateFileContent(
         sketchFile.id,
         `function setup() {
-        createCanvas(800, 800);
+        createCanvas(${this.canvas.offsetWidth}, ${this.canvas.offsetHeight});
       }
       
       function draw() {
@@ -257,13 +258,19 @@ class IDEView extends React.Component {
       <RootPage>
         <main className="editor-preview-container">
           <Grid container>
-            <Grid item xs={10}>
+            <Grid
+              item
+              style={{ flexGrow: 1 }}
+              ref={(canvas) => {
+                this.canvas = canvas;
+              }}
+            >
               <section className="preview-frame-holder">
-                <header className="preview-frame__header">
+                {/* <header className="preview-frame__header">
                   <h2 className="preview-frame__title">
                     {this.props.t('Toolbar.Preview')}
                   </h2>
-                </header>
+                </header> */}
                 <div className="preview-frame__content">
                   <div
                     className="preview-frame-overlay"
@@ -281,8 +288,8 @@ class IDEView extends React.Component {
                 </div>
               </section>
             </Grid>
-            <Grid item xs={2}>
-              {/* <Dock /> */}
+            <Grid item style={{ width: 72 }}>
+              <Dock />
             </Grid>
           </Grid>
         </main>
