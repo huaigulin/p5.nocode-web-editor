@@ -6,6 +6,8 @@ import { withRouter } from 'react-router';
 import { withTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import SplitPane from 'react-split-pane';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
 import Editor from '../components/Editor';
 import Sidebar from '../components/Sidebar';
 import PreviewFrame from '../components/PreviewFrame';
@@ -36,6 +38,7 @@ import Feedback from '../components/Feedback';
 import { CollectionSearchbar } from '../components/Searchbar';
 import { getIsUserOwner } from '../selectors/users';
 import RootPage from '../../../components/RootPage';
+import { startSketch } from '../actions/ide';
 
 function getTitle(props) {
   const { id } = props.project;
@@ -66,8 +69,8 @@ class IDEView extends React.Component {
     this.handleGlobalKeydown = this.handleGlobalKeydown.bind(this);
 
     this.state = {
-      consoleSize: props.ide.consoleIsExpanded ? 150 : 29,
-      sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
+      consoleSize: props.ide.consoleIsExpanded ? 150 : 29
+      // sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
     };
   }
 
@@ -97,27 +100,32 @@ class IDEView extends React.Component {
 
     this.autosaveInterval = null;
     const file = this.cmController.getContent();
-    this.props.updateFileContent(
-      file.id,
-      `function setup() {
-      createCanvas(800, 800);
-    }
-    
-    function draw() {
-      background(220);
-    }`
-    );
+    // try with typing code to draw
+    setTimeout(() => {
+      this.props.updateFileContent(
+        file.id,
+        `function setup() {
+        createCanvas(800, 800);
+      }
+      
+      function draw() {
+        background(220);
+        circle(20, 20, 20);
+      }`
+      );
+      this.props.startSketch();
+    }, 1000);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.location !== this.props.location) {
       this.props.setPreviousPath(this.props.location.pathname);
     }
-    if (this.props.ide.sidebarIsExpanded !== nextProps.ide.sidebarIsExpanded) {
-      this.setState({
-        sidebarSize: nextProps.ide.sidebarIsExpanded ? 160 : 20
-      });
-    }
+    // if (this.props.ide.sidebarIsExpanded !== nextProps.ide.sidebarIsExpanded) {
+    //   this.setState({
+    //     sidebarSize: nextProps.ide.sidebarIsExpanded ? 160 : 20
+    //   });
+    // }
   }
 
   componentWillUpdate(nextProps) {
@@ -260,106 +268,12 @@ class IDEView extends React.Component {
     this.props.updateFileContent(file.id, file.content);
   };
 
-  updateSketch = () => {
-    const file = this.cmController.getContent();
-    this.props.updateFileContent(
-      file.id,
-      `function setup() {
-      createCanvas(400, 400);
-    }
-    
-    function draw() {
-      background(220);
-    }`
-    );
-  };
-
   render() {
     return (
       <RootPage>
-        {/* <Helmet>
-          <title>{getTitle(this.props)}</title>
-        </Helmet>
-        {this.props.toast.isVisible && <Toast />}
-        <Nav
-          warnIfUnsavedChanges={this.handleUnsavedChanges}
-          cmController={this.cmController}
-        />
-        <Toolbar
-          syncFileContent={this.syncFileContent}
-          key={this.props.project.id}
-        />
-        {this.props.ide.preferencesIsVisible && (
-          <Overlay
-            title={this.props.t('Preferences.Settings')}
-            ariaLabel={this.props.t('Preferences.Settings')}
-            closeOverlay={this.props.closePreferences}
-          >
-            <Preferences
-              fontSize={this.props.preferences.fontSize}
-              setFontSize={this.props.setFontSize}
-              autosave={this.props.preferences.autosave}
-              linewrap={this.props.preferences.linewrap}
-              lineNumbers={this.props.preferences.lineNumbers}
-              setLineNumbers={this.props.setLineNumbers}
-              setAutosave={this.props.setAutosave}
-              setLinewrap={this.props.setLinewrap}
-              lintWarning={this.props.preferences.lintWarning}
-              setLintWarning={this.props.setLintWarning}
-              textOutput={this.props.preferences.textOutput}
-              gridOutput={this.props.preferences.gridOutput}
-              setTextOutput={this.props.setTextOutput}
-              setGridOutput={this.props.setGridOutput}
-              theme={this.props.preferences.theme}
-              setTheme={this.props.setTheme}
-              autocloseBracketsQuotes={
-                this.props.preferences.autocloseBracketsQuotes
-              }
-              setAutocloseBracketsQuotes={this.props.setAutocloseBracketsQuotes}
-            />
-          </Overlay>
-        )} */}
         <main className="editor-preview-container">
-          <SplitPane
-            split="vertical"
-            size={this.state.sidebarSize}
-            onChange={(size) => this.setState({ sidebarSize: size })}
-            onDragFinished={this._handleSidebarPaneOnDragFinished}
-            allowResize={this.props.ide.sidebarIsExpanded}
-            minSize={125}
-          >
-            {/* <Sidebar
-              files={this.props.files}
-              setSelectedFile={this.props.setSelectedFile}
-              newFile={this.props.newFile}
-              isExpanded={this.props.ide.sidebarIsExpanded}
-              deleteFile={this.props.deleteFile}
-              updateFileName={this.props.updateFileName}
-              projectOptionsVisible={this.props.ide.projectOptionsVisible}
-              openProjectOptions={this.props.openProjectOptions}
-              closeProjectOptions={this.props.closeProjectOptions}
-              newFolder={this.props.newFolder}
-              user={this.props.user}
-              owner={this.props.project.owner}
-              openUploadFileModal={this.props.openUploadFileModal}
-              closeUploadFileModal={this.props.closeUploadFileModal}
-            /> */}
-            <SplitPane
-              split="vertical"
-              defaultSize="50%"
-              onChange={() => {
-                this.overlay.style.display = 'block';
-              }}
-              onDragFinished={() => {
-                this.overlay.style.display = 'none';
-              }}
-              resizerStyle={{
-                borderLeftWidth: '2px',
-                borderRightWidth: '2px',
-                width: '2px',
-                margin: '0px 0px'
-              }}
-            >
+          <Grid container>
+            <Grid item xs={12}>
               <section className="preview-frame-holder">
                 <header className="preview-frame__header">
                   <h2 className="preview-frame__title">
@@ -382,16 +296,20 @@ class IDEView extends React.Component {
                   <PreviewFrame cmController={this.cmController} />
                 </div>
               </section>
+            </Grid>
+            {/* Hide the code editor and console */}
+            <Grid item xs={0}>
               <SplitPane
                 split="horizontal"
                 primary="second"
                 size={
                   this.props.ide.consoleIsExpanded ? this.state.consoleSize : 29
                 }
-                minSize={229}
+                minSize={0}
                 onChange={(size) => this.setState({ consoleSize: size })}
                 allowResize={this.props.ide.consoleIsExpanded}
                 className="editor-preview-subpanel"
+                maxSize={0}
               >
                 <Editor
                   provideController={(ctl) => {
@@ -400,83 +318,9 @@ class IDEView extends React.Component {
                 />
                 <Console />
               </SplitPane>
-            </SplitPane>
-          </SplitPane>
+            </Grid>
+          </Grid>
         </main>
-        {/* {this.props.ide.modalIsVisible && <NewFileModal />}
-        {this.props.ide.newFolderModalVisible && (
-          <NewFolderModal closeModal={this.props.closeNewFolderModal} />
-        )}
-        {this.props.ide.uploadFileModalVisible && (
-          <UploadFileModal closeModal={this.props.closeUploadFileModal} />
-        )}
-        {this.props.location.pathname === '/about' && (
-          <Overlay
-            title={this.props.t('About.Title')}
-            previousPath={this.props.ide.previousPath}
-            ariaLabel={this.props.t('About.Title')}
-          >
-            <About previousPath={this.props.ide.previousPath} />
-          </Overlay>
-        )}
-        {this.props.location.pathname === '/feedback' && (
-          <Overlay
-            title={this.props.t('IDEView.SubmitFeedback')}
-            previousPath={this.props.ide.previousPath}
-            ariaLabel={this.props.t('IDEView.SubmitFeedbackARIA')}
-          >
-            <Feedback previousPath={this.props.ide.previousPath} />
-          </Overlay>
-        )}
-        {this.props.location.pathname.match(/add-to-collection$/) && (
-          <Overlay
-            ariaLabel={this.props.t('IDEView.AddCollectionARIA')}
-            title={this.props.t('IDEView.AddCollectionTitle')}
-            previousPath={this.props.ide.previousPath}
-            actions={<CollectionSearchbar />}
-            isFixedHeight
-          >
-            <AddToCollectionList
-              projectId={this.props.params.project_id}
-              username={this.props.params.username}
-              user={this.props.user}
-            />
-          </Overlay>
-        )}
-        {this.props.ide.shareModalVisible && (
-          <Overlay
-            title={this.props.t('IDEView.ShareTitle')}
-            ariaLabel={this.props.t('IDEView.ShareARIA')}
-            closeOverlay={this.props.closeShareModal}
-          >
-            <ShareModal
-              projectId={this.props.ide.shareModalProjectId}
-              projectName={this.props.ide.shareModalProjectName}
-              ownerUsername={this.props.ide.shareModalProjectUsername}
-            />
-          </Overlay>
-        )}
-        {this.props.ide.keyboardShortcutVisible && (
-          <Overlay
-            title={this.props.t('KeyboardShortcuts.Title')}
-            ariaLabel={this.props.t('KeyboardShortcuts.Title')}
-            closeOverlay={this.props.closeKeyboardShortcutModal}
-          >
-            <KeyboardShortcutModal />
-          </Overlay>
-        )}
-        {this.props.ide.errorType && (
-          <Overlay
-            title={this.props.t('Common.Error')}
-            ariaLabel={this.props.t('Common.ErrorARIA')}
-            closeOverlay={this.props.hideErrorModal}
-          >
-            <ErrorModal
-              type={this.props.ide.errorType}
-              closeModal={this.props.hideErrorModal}
-            />
-          </Overlay>
-        )} */}
       </RootPage>
     );
   }
