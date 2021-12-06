@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import BrushIcon from '@mui/icons-material/Brush';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 
 export default function Dock() {
   return (
@@ -30,6 +31,11 @@ export default function Dock() {
             <Grid item>
               <IconButton size="large">
                 <CropSquareIcon fontSize="large" />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton size="large">
+                <TextFieldsIcon fontSize="large" />
               </IconButton>
             </Grid>
           </Grid>
