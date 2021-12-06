@@ -83,6 +83,25 @@ class IDEView extends React.Component {
 
     // listen for window resize
     window.addEventListener('resize', this.updateWindowSize);
+
+    // create canvas on mount
+    const sketchFile = this.props.files.find(
+      (file) => file.name === 'sketch.js'
+    );
+    // try with typing code to draw
+    setTimeout(() => {
+      this.props.updateFileContent(
+        sketchFile.id,
+        `function setup() {
+          createCanvas(${this.state.windowWidth}, ${this.state.windowHeight});
+        }
+        
+        function draw() {
+          background(220);
+        }`
+      );
+      this.props.startSketch();
+    }, 1000);
   }
 
   componentWillReceiveProps(nextProps) {
