@@ -48,8 +48,8 @@ class IDEView extends React.Component {
     this.handleGlobalKeydown = this.handleGlobalKeydown.bind(this);
 
     this.state = {
-      windowWidth: 0,
-      windowHeight: 0
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
       // consoleSize: props.ide.consoleIsExpanded ? 150 : 29
       // sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
     };
