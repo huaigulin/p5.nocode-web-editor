@@ -46,12 +46,15 @@ class IDEView extends React.Component {
   constructor(props) {
     super(props);
     this.handleGlobalKeydown = this.handleGlobalKeydown.bind(this);
+    this.updateDrawData = this.updateDrawData.bind(this);
+    this.updateReferenceData = this.updateReferenceData.bind(this);
 
     this.state = {
       windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
-      // consoleSize: props.ide.consoleIsExpanded ? 150 : 29
-      // sidebarSize: props.ide.sidebarIsExpanded ? 160 : 20
+      windowHeight: window.innerHeight,
+      setupData: [],
+      drawData: [],
+      referenceData: []
     };
   }
 
@@ -124,33 +127,32 @@ class IDEView extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // redraw when window width and height updates
+    // redraw when window width and height updates, and when drawData nad referenceData update
     if (
       prevState.windowWidth !== this.state.windowWidth ||
-      prevState.windowHeight !== this.state.windowHeight
+      prevState.windowHeight !== this.state.windowHeight ||
+      prevState.drawData !== this.state.drawData ||
+      prevState.referenceData !== this.state.referenceData
     ) {
+      console.log(this.state.drawData);
+      console.log(this.state.referenceData);
       const sketchFile = this.props.files.find(
         (file) => file.name === 'sketch.js'
       );
       // try with typing code to draw
-      setTimeout(() => {
-        console.log('++++++');
-        console.log(this.props);
-        console.log(sketchFile);
-        console.log(this.canvas.offsetWidth);
-        this.props.updateFileContent(
-          sketchFile.id,
-          `function setup() {
+      this.props.updateFileContent(
+        sketchFile.id,
+        `function setup() {
           createCanvas(${this.state.windowWidth}, ${this.state.windowHeight});
         }
         
         function draw() {
           background(220);
-          circle(20, 20, 20);
+          ${this.state.drawData.map((data) => data.code).join('\n')}\n
+          ${this.state.referenceData.map((data) => data.code).join('\n')}\n
         }`
-        );
-        this.props.startSketch();
-      }, 1000);
+      );
+      this.props.startSketch();
     }
 
     if (this.props.isUserOwner && this.props.project.id) {
@@ -192,6 +194,40 @@ class IDEView extends React.Component {
     // remove window resize event listener
     window.removeEventListener('resize', this.updateWindowSize);
   }
+
+  /**
+   * Updates the data used by p5 draw() function
+   * @param {boolean} appendMode if true append to current data, else replace it
+   * @param {object} data must contain "id" and "code" properties
+   */
+  updateDrawData = (appendMode, data) => {
+    if (appendMode) {
+      this.setState({
+        drawData: [...this.state.drawData, data]
+      });
+    } else {
+      this.setState({
+        drawData: [data]
+      });
+    }
+  };
+
+  /**
+   * Updates the data that are shown on canvas but are not included in final output
+   * @param {boolean} appendMode if true append to current data, else replace it
+   * @param {object} data must contain "id" and "code" properties
+   */
+  updateReferenceData = (appendMode, data) => {
+    if (appendMode) {
+      this.setState({
+        referenceData: [...this.state.referenceData, data]
+      });
+    } else {
+      this.setState({
+        referenceData: [data]
+      });
+    }
+  };
 
   updateWindowSize = () => {
     this.setState({
@@ -323,8 +359,11 @@ class IDEView extends React.Component {
                 <PreviewFrame cmController={this.cmController} />
               </div>
             </section>
+            <Dock
+              updateDrawData={this.updateDrawData}
+              updateReferenceData={this.updateReferenceData}
+            />
           </Grid>
-          <Dock />
         </main>
       </RootPage>
     );

@@ -21,6 +21,7 @@ import CropSquareIcon from '@mui/icons-material/CropSquare';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import MouseIcon from '@mui/icons-material/Mouse';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
+import { v4 as uuidv4 } from 'uuid';
 
 const LargeTextTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -30,7 +31,8 @@ const LargeTextTooltip = styled(({ className, ...props }) => (
   }
 }));
 
-export default function Dock() {
+export default function Dock(props) {
+  const { updateDrawData, updateReferenceData } = props;
   const [shapesMenuAnchorEl, setShapesMenuAnchorEl] = useState(null);
   const shapesMenuOpen = Boolean(shapesMenuAnchorEl);
   const handleShapesClick = (event) => {
@@ -44,8 +46,7 @@ export default function Dock() {
     <Box sx={{ position: 'absolute', right: 0 }}>
       <AppBar
         position="sticky"
-        color="transparent"
-        sx={{ borderRadius: '16px 0 0 16px' }}
+        sx={{ borderRadius: '16px 0 0 16px', backgroundColor: '#FFFFFF' }}
       >
         <Toolbar style={{ padding: 16 }}>
           <Grid container direction="column" spacing={2}>
@@ -98,7 +99,18 @@ export default function Dock() {
                     <span style={{ fontSize: 16 }}>Line</span>
                   </ListItemText>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    const id = `circle-${uuidv4()}`;
+                    updateDrawData(true, {
+                      id,
+                      postion: 'width/2, height/2',
+                      diameter: '60',
+                      code: 'circle(width/2, height/2, 60);'
+                    });
+                    handleShapesClose();
+                  }}
+                >
                   <ListItemIcon>
                     <SvgIcon fontSize="large">
                       <path
